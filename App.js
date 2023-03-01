@@ -56,6 +56,7 @@ return(
   } else if(loggedInState==loggedInStates.NOT_LOGGED_IN){
     return (
       <View>
+         <Text style={styles.title}>Welcome back!</Text>
         <TextInput 
           value={phoneNumber}
           onChangeText={setPhoneNumber}
@@ -154,5 +155,12 @@ return(
        alignItems: "center",
        backgroundColor: "#DDDDDD",
        padding: 10
-     }    
+     },
+     title: {
+      textAlign: "center",
+      marginTop: 60, //this can be adjusted depending on where your iPhone camera is...//
+      fontSize: 25,
+      color:'#A0CE4E',
+      fontWeight:'bold',
+     },  
  })
