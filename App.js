@@ -6,6 +6,8 @@ import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { set } from 'react-native-reanimated';
 
 
 
@@ -23,6 +25,20 @@ const App = () =>{
   const [phoneNumber,setPhoneNumber] = React.useState("");
   const [oneTimePassword, setOneTimePassword] = React.useState("");
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
+  // wherever the useState is located 
+  const [isBiometricSupported, setIsBiometricSupported] = React.useState(false);
+  const [isBiometricEnrolled, setIsBiometricEnrolled] = React.useState(false);
+
+  // Check if hardware supports biometrics
+  useEffect(() => {
+    (async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      setIsBiometricEnrolled[enrolled];
+    })();
+  });
 
   useEffect(()=>{//this is code that has to run before we show app screen
    const getSessionToken = async()=>{
@@ -36,7 +52,6 @@ const App = () =>{
       }
     }    
     );    
-
     if(validateResponse.status==200){//we know it is a good non-expired token
       const userName = await validateResponse.text();
       await AsyncStorage.setItem('userName',userName);//save user name for later
@@ -57,6 +72,13 @@ return(
     return (
       <View>
          <Text style={styles.title}>Welcome back!</Text>
+         {/* // In our JSX we conditionally render a text to see inform users if their device supports */}
+        <Text> {isBiometricSupported ? 'Your device is compatible with Biometrics'
+        : 'Face or Fingerprint scanner is not available on this device'}
+        </Text>
+        <Text> {isBiometricEnrolled ? 'You have saved a fingerprint or face ID'
+        : 'You have not saved a fingerprint or face ID'}
+        </Text>
         <TextInput 
           value={phoneNumber}
           onChangeText={setPhoneNumber}
@@ -64,6 +86,16 @@ return(
           placeholderTextColor='#4251f5' 
           placeholder='Cell Phone'>          
         </TextInput>
+        <Button
+          title='Biometric Authentication'
+          style={styles.button}
+          onPress={async () => {  
+            const biometricAuth = await LocalAuthentication.authenticateAsync({
+                  promptMessage: 'Login with Biometrics',
+                  disableDeviceFallback: true,
+                });
+          }}
+        ></Button>
         <Button
           title='Send'
           style={styles.button}
