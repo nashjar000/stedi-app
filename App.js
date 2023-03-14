@@ -25,7 +25,6 @@ const App = () =>{
   const [phoneNumber,setPhoneNumber] = React.useState("");
   const [oneTimePassword, setOneTimePassword] = React.useState("");
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
-  // wherever the useState is located 
   const [isBiometricSupported, setIsBiometricSupported] = React.useState(false);
   const [isBiometricEnrolled, setIsBiometricEnrolled] = React.useState(false);
 
@@ -33,10 +32,12 @@ const App = () =>{
   useEffect(() => {
     (async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
+      console.log("Compatible:",compatible);
       setIsBiometricSupported(compatible);
 
       const enrolled = await LocalAuthentication.isEnrolledAsync();
-      setIsBiometricEnrolled[enrolled];
+      console.log("Enrolled:", enrolled);
+      setIsBiometricEnrolled(enrolled);
     })();
   });
 
@@ -93,8 +94,11 @@ return(
             const biometricAuth = await LocalAuthentication.authenticateAsync({
                   promptMessage: 'Login with Biometrics',
                   disableDeviceFallback: true,
+                  cancelLabel:"I am not interested in biometric Authentication"
                 });
-          }}
+                console.log("bimometricAuth",biometricAuth);
+          }
+        }
         ></Button>
         <Button
           title='Send'

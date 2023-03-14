@@ -8,10 +8,13 @@
       }
     },
     "ios": {
-      "infoPList":{
+      "infoPlist":{
         "NSFaceIDUsageDescription":"Allow biometric for STEDI"
       },
       "bundleIdentifier": "com.scmurdock.stediapp"
+    },
+    "android": {
+     "package":  "com.scmurdock.stediapp"
     }
   }
 }
